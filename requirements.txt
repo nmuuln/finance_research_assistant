@@ -1,0 +1,13 @@
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+requests
+google-genai
+python-dotenv
+python-docx
+
+# new (search + cleaner)
+tavily-python
+beautifulsoup4
+readability-lxml
+lxml_html_clean

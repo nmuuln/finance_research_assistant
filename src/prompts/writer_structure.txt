@@ -1,0 +1,6 @@
+Structure the final report as:
+1. Introduction (context, purpose, scope)
+2. Analysis (methods, data sources, findings; subsections allowed)
+3. Conclusion (succinct answer to the research question)
+4. Recommendations (policy/market/credit implications)
+Use numbered inline citations like [1], [2], ... mapped to a final "References" section with URLs.
