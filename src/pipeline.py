@@ -11,7 +11,7 @@ from src.research.orchestrator import run_research
 def _load(path: str) -> str:
     return Path(path).read_text(encoding="utf-8")
 
-def run_pipeline(topic: str, include_web: bool = True) -> Dict[str, str]:
+def run_pipeline(topic: str, include_web: bool = True, language: str = "mn") -> Dict[str, str]:
     base = Path(__file__).parent
     domain_guard = _load(base / "prompts" / "domain_guard.txt")
     writer_tone = _load(base / "prompts" / "writer_tone.txt")
@@ -37,6 +37,7 @@ def run_pipeline(topic: str, include_web: bool = True) -> Dict[str, str]:
         brief=brief,
         references=references,
         model="gemini-2.5-pro",
+        language=language,
     )
 
     # 4) Export .docx

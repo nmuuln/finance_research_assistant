@@ -16,3 +16,4 @@ lxml_html_clean
 google-adk
 fastapi
 uvicorn
+pypdf

@@ -64,7 +64,7 @@ Automates finance-focused research and report generation by orchestrating Gemini
 ```bash
 source .venv/bin/activate
 cp .env.example .env   # populate GOOGLE_API_KEY, TAVILY_API_KEY, etc.
-python run.py          # prints previews and docx path
+python run.py          # prints previews and docx path (defaults to Mongolian output)
 ```
 
 ### 2. Conversational CLI (ADK Runner)
@@ -97,6 +97,7 @@ Environment variables consumed through `.env` (loaded via `python-dotenv`):
 | `TAVILY_API_KEY`    | Tavily search key (optional but recommended)           |
 | `PROJECT_ID`, `GDR_*` | Additional Discovery Engine settings (legacy Deep Research) |
 | `TOPIC`             | Default topic for `run.py` / `run_adk.py`              |
+| `LANGUAGE`          | Optional default output language (`mn` or `en`); defaults to Mongolian |
 
 For ADK CLI/Web, the same `.env` file is auto-loaded by the runner.
 
@@ -110,6 +111,7 @@ For ADK CLI/Web, the same `.env` file is auto-loaded by the runner.
 - `readability-lxml`, `beautifulsoup4` – HTML extraction and cleaning.
 - `python-docx` – final report export to Microsoft Word format.
 - `fastapi`, `uvicorn` – optional REST server (`run_adk_web.py`).
+- `pypdf` – lightweight text extraction for PDF sources (improves Step 2 note capture).
 
 ---
 
@@ -117,7 +119,7 @@ For ADK CLI/Web, the same `.env` file is auto-loaded by the runner.
 
 - All tool functions return `{ "success": bool, "data" | "error": ... }`, enabling the agent to reason about failures.
 - Session state keys (`research_plan`, `research_brief`, `draft_markdown`, `report_path`, etc.) are stored by the agent so follow-up turns can reuse prior work without re-running tools unnecessarily.
-- The ADK agent instructions enforce finance-only scope, thesis-style structure, and a numbered citation format aligned to the references list produced by research.
+- The ADK agent instructions enforce finance-only scope, thesis-style structure, a Mongolian-first experience (with optional English on request), and numbered citations aligned to the references list.
 - Logging from ADK commands is written to `/tmp/agents_log/agent.latest.log` for troubleshooting.
 
 ---

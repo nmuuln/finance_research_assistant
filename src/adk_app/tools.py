@@ -53,6 +53,7 @@ def draft_report(
     topic: str,
     brief: str,
     references: Optional[List[str]],
+    language: str = "mn",
 ) -> dict:
     """Draft the final finance report given research brief and references."""
     if not brief or not brief.strip():
@@ -75,6 +76,7 @@ def draft_report(
             brief=brief,
             references=refs,
             model="gemini-2.5-pro",
+            language=language,
         )
     except Exception as exc:
         return {"success": False, "error": f"draft_report failed: {exc}"}

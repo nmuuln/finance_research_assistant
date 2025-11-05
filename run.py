@@ -5,7 +5,8 @@ from src.pipeline import run_pipeline
 def main():
     load_dotenv()
     topic = os.getenv("TOPIC") or "Sovereign spread dynamics during rate-hiking cycles"
-    out = run_pipeline(topic, include_web=True)
+    language = os.getenv("LANGUAGE", "mn")
+    out = run_pipeline(topic, include_web=True, language=language)
     print("\n=== PIPELINE RESULT ===")
     for k, v in out.items():
         if k.endswith("_preview"):
