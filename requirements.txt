@@ -11,3 +11,8 @@ tavily-python
 beautifulsoup4
 readability-lxml
 lxml_html_clean
+
+# Google Agent Development Kit
+google-adk
+fastapi
+uvicorn
