@@ -4,8 +4,13 @@ from io import BytesIO
 
 import requests
 from bs4 import BeautifulSoup
-from readability import Document
 from pypdf import PdfReader
+
+# Readability is nice-to-have; fall back to plain HTML parsing if unavailable.
+try:  # pragma: no cover - import guard only
+    from readability import Document
+except ModuleNotFoundError:
+    Document = None
 
 # Remove NUL and control chars (except common whitespace)
 _CTRL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
@@ -59,17 +64,18 @@ def fetch_and_clean(url: str, timeout: int = 20) -> Optional[str]:
 
     html = _sanitize(resp.text)
 
-    # Try Readability first
-    try:
-        doc = Document(html)
-        summary_html = doc.summary()
-        soup = BeautifulSoup(summary_html, "html.parser")
-        text = soup.get_text(" ", strip=True)
-        if text and len(text) >= 200:
-            return text
-    except Exception:
-        # fall through to plain parse
-        pass
+    # Try Readability first (if installed).
+    if Document:
+        try:
+            doc = Document(html)
+            summary_html = doc.summary()
+            soup = BeautifulSoup(summary_html, "html.parser")
+            text = soup.get_text(" ", strip=True)
+            if text and len(text) >= 200:
+                return text
+        except Exception:
+            # fall through to plain parse
+            pass
 
     # Fallback: plain parsing of sanitized HTML
     try:

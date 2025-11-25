@@ -2,6 +2,7 @@ from typing import Dict
 import json
 from google import genai
 from google.genai.types import Content, Part
+from src.utils.retry import retry_gemini_call
 
 EXTRACT_PROMPT_TMPL = """You are a financial research analyst.
 Extract factual notes for the finance topic with strict provenance.
@@ -41,6 +42,7 @@ def _coerce_json(text: str) -> Dict:
         return {}
 
 
+@retry_gemini_call
 def extract_notes(client: genai.Client, text: str, url: str, model: str = "gemini-2.5-flash") -> Dict:
     prompt = EXTRACT_PROMPT_TMPL.format(TEXT=text[:8000], URL=url)
     resp = client.models.generate_content(

@@ -5,6 +5,7 @@ from google.genai.types import Content, Part
 from .tavily_search import WebSearch
 from .fetch import fetch_and_clean
 from .notes import extract_notes
+from src.utils.retry import retry_gemini_call
 
 PLANNER_PROMPT = """{DOMAIN_GUARD}
 
@@ -48,12 +49,13 @@ def _truncate_notes(notes: List[Dict]) -> List[Dict]:
     return trimmed
 
 
-def plan_queries(client: genai.Client, domain_guard: str, topic: str, model: str = "gemini-2.5-pro") -> Dict:
+@retry_gemini_call
+def plan_queries(client: genai.Client, domain_guard: str, topic: str, model: str = "gemini-2.5-flash") -> Dict:
     prompt = PLANNER_PROMPT.format(DOMAIN_GUARD=domain_guard, TOPIC=topic)
     resp = client.models.generate_content(
         model=model,
         contents=[Content(role="user", parts=[Part.from_text(text=prompt)])],
-        
+
     )
     import json
     try:
@@ -61,7 +63,8 @@ def plan_queries(client: genai.Client, domain_guard: str, topic: str, model: str
     except Exception:
         return {"sub_questions": [], "queries": [f"{topic} financial markets credit policy analysis"]}
 
-def build_brief_from_notes(client: genai.Client, domain_guard: str, notes: List[Dict], model: str = "gemini-2.5-pro") -> str:
+@retry_gemini_call
+def build_brief_from_notes(client: genai.Client, domain_guard: str, notes: List[Dict], model: str = "gemini-2.5-flash") -> str:
     import json
 
     safe_notes = _truncate_notes(notes)
@@ -88,6 +91,8 @@ def build_brief_from_notes(client: genai.Client, domain_guard: str, notes: List[
     return resp.text or ""
 
 def run_research(topic: str, domain_guard: str, gemini: genai.Client, tavily_key: str | None = None) -> Dict:
+    import time
+
     # 1) Plan
     plan = plan_queries(gemini, domain_guard, topic)
     queries = plan.get("queries") or [f"{topic} financial markets credit policy analysis"]
@@ -108,6 +113,8 @@ def run_research(topic: str, domain_guard: str, gemini: genai.Client, tavily_key
             note = extract_notes(gemini, text, url, model="gemini-2.5-flash")
             notes.append(note)
             refs.append(url)
+            # Add small delay between API calls to avoid rate limiting
+            time.sleep(0.5)
 
     # 3) Brief
     brief = build_brief_from_notes(gemini, domain_guard, notes)

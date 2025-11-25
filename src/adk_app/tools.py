@@ -75,7 +75,7 @@ def draft_report(
             research_question=topic,
             brief=brief,
             references=refs,
-            model="gemini-2.5-pro",
+            model="gemini-2.5-flash",
             language=language,
         )
     except Exception as exc:

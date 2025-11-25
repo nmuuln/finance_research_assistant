@@ -1,5 +1,23 @@
 .env
+.env.local
 .venv/
 outputs/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Docker
+*.log
+
+# Cloud Build
+.gcloudignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store

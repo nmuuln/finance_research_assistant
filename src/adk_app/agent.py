@@ -4,7 +4,7 @@ from src.adk_app.prompts import get_domain_guard, get_writer_structure, get_writ
 from src.adk_app.tools import build_function_tools
 
 
-def build_agent(model: str = "gemini-2.5-pro") -> LlmAgent:
+def build_agent(model: str = "gemini-2.5-flash") -> LlmAgent:
     """Instantiate the ADK agent that mirrors the original pipeline."""
     domain_guard = get_domain_guard()
     tone = get_writer_tone()
@@ -27,7 +27,9 @@ Workflow guidance:
    - On success, save the markdown to state key `draft_markdown`. On failure, surface the error and request guidance.
 4. Generate the .docx only when the user explicitly asks for the final report by calling `export_report`.
    - Supply both `report_markdown` and a `filename_prefix` (reuse `ufe_finance_report` or a user-specified value).
-   - Announce the saved file path (from the returned `data.path`), store it in `report_path`, and include a short summary in your reply.
+   - Announce the download URL (from `data.download_url`) prominently so the user can download their report.
+   - If the URL starts with "https://", it's a public cloud storage link they can click immediately.
+   - Also mention the file path (`data.path`) and file size (`data.size_bytes`) for reference.
 5. Throughout the conversation, recap progress and ask what the user would like next (continue research, revise, export, etc.). Offer to switch languages if needed.
 
 Do NOT fabricate sources. Always align numbered inline citations with the provided reference list.

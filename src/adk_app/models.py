@@ -36,4 +36,16 @@ class ExportedDocument(BaseModel):
         default=None,
         description="Optional copy of the document contents that were exported.",
     )
+    filename: Optional[str] = Field(
+        default=None,
+        description="Name of the generated file.",
+    )
+    download_url: Optional[str] = Field(
+        default=None,
+        description="Public URL to download the file (if uploaded to cloud storage).",
+    )
+    size_bytes: Optional[int] = Field(
+        default=None,
+        description="Size of the file in bytes.",
+    )
 

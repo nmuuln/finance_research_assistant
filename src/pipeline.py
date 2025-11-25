@@ -36,7 +36,7 @@ def run_pipeline(topic: str, include_web: bool = True, language: str = "mn") -> 
         research_question=topic,
         brief=brief,
         references=references,
-        model="gemini-2.5-pro",
+        model="gemini-2.5-flash",
         language=language,
     )
 
