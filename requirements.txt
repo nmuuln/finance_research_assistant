@@ -3,6 +3,7 @@ google-auth-httplib2
 google-auth-oauthlib
 requests
 google-genai
+boto3
 python-dotenv
 python-docx
 
@@ -17,3 +18,11 @@ google-adk
 fastapi
 uvicorn
 pypdf
+
+# Cloud Storage
+google-cloud-storage
+
+# File Processing
+pandas
+openpyxl
+python-multipart

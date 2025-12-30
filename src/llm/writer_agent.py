@@ -1,6 +1,7 @@
 from typing import List
 from google import genai
 from google.genai.types import Content, Part
+from src.utils.retry import retry_gemini_call
 
 
 def init_gemini_client(api_key: str | None) -> genai.Client:
@@ -30,6 +31,7 @@ def _language_directive(language: str) -> str:
     )
 
 
+@retry_gemini_call
 def draft_finance_report(
     client: genai.Client,
     domain_guard: str,
@@ -38,7 +40,7 @@ def draft_finance_report(
     research_question: str,
     brief: str,
     references: List[str],
-    model: str = "gemini-2.5-pro",
+    model: str = "gemini-2.0-flash",
     language: str = "mn",
 ) -> str:
     sources_block = "\n".join(f"[{i+1}] {u}" for i, u in enumerate(references))

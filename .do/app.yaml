@@ -1,0 +1,60 @@
+name: ufe-research-writer
+region: nyc
+
+services:
+  - name: web
+    github:
+      repo: your-username/finance-research-agent
+      branch: main
+      deploy_on_push: true
+
+    dockerfile_path: Dockerfile.fullstack
+
+    http_port: 8080
+
+    instance_count: 1
+    instance_size_slug: professional-xs
+
+    envs:
+      - key: GOOGLE_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: TAVILY_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: SPACES_ACCESS_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: SPACES_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: SPACES_REGION
+        scope: RUN_TIME
+        value: "nyc3"
+
+      - key: SPACES_BUCKET
+        scope: RUN_TIME
+        value: "ufe-research-reports"
+
+      - key: SPACES_ENDPOINT
+        scope: RUN_TIME
+        value: "https://nyc3.digitaloceanspaces.com"
+
+      - key: DATABASE_PATH
+        scope: RUN_TIME
+        value: "/app/data/app.db"
+
+    routes:
+      - path: /
+
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+      period_seconds: 30
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 3

@@ -1,10 +1,13 @@
 import os
+import logging
 from typing import List, Optional
 
 from google.adk.tools.function_tool import FunctionTool
 from pydantic import ValidationError
 
-from src.adk_app.models import DraftOutput, ExportedDocument, ResearchOutput
+logger = logging.getLogger(__name__)
+
+from src.adk_app.models import DraftOutput, ExportedDocument, ResearchOutput, LiteratureReviewOutput
 from src.adk_app.prompts import (
     get_domain_guard,
     get_writer_structure,
@@ -13,6 +16,10 @@ from src.adk_app.prompts import (
 from src.config import cfg
 from src.llm.writer_agent import draft_finance_report, init_gemini_client
 from src.research.orchestrator import run_research as orchestrate_research
+from src.research.literature_review import (
+    run_literature_review,
+    format_literature_review_for_display,
+)
 from src.tools.output_formatter import OutputFormatterTool
 
 
@@ -20,6 +27,69 @@ def _get_gemini_client():
     config = cfg()
     key = config.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
     return init_gemini_client(key)
+
+
+def run_academic_review(topic: str, language: str = "mn") -> dict:
+    """
+    Search academic databases and synthesize a literature review.
+
+    This tool searches Semantic Scholar and OpenAlex for academic papers
+    on the given topic, then synthesizes findings into a structured
+    literature review with key themes and research gaps.
+
+    The user must approve the review before main research can proceed.
+
+    Args:
+        topic: The research topic to search for in academic databases.
+        language: Output language code - "mn" for Mongolian (default), "en" for English.
+
+    Returns:
+        A dictionary containing:
+        - success: bool indicating if the search succeeded
+        - data: Full literature review data (papers, summary, themes, gaps, search_query)
+        - formatted_display: IMPORTANT - A complete markdown-formatted literature review
+          that you MUST show to the user. It includes all papers with titles, authors,
+          year, citations, DOI links, abstracts, synthesis, themes, and gaps.
+        - paper_count: Number of papers found
+        - requires_approval: Always True - wait for user approval before proceeding
+    """
+    if not topic or not topic.strip():
+        return {"success": False, "error": "Topic must be a non-empty string."}
+
+    client = _get_gemini_client()
+    domain_guard = get_domain_guard()
+    config = cfg()
+
+    try:
+        review = run_literature_review(
+            topic=topic,
+            domain_guard=domain_guard,
+            gemini=client,
+            semantic_scholar_key=config.get("SEMANTIC_SCHOLAR_API_KEY"),
+            openalex_email=config.get("OPENALEX_EMAIL"),
+            max_papers_per_source=5,
+            language=language,
+        )
+    except Exception as exc:
+        logger.error(f"run_academic_review failed: {exc}", exc_info=True)
+        return {"success": False, "error": f"Literature review failed: {exc}"}
+
+    output = LiteratureReviewOutput(
+        papers=review.papers,
+        summary=review.summary,
+        themes=review.themes,
+        gaps=review.gaps,
+        approved=False,
+        search_query=review.search_query,
+    )
+
+    return {
+        "success": True,
+        "data": output.model_dump(),
+        "formatted_display": format_literature_review_for_display(review, language=language),
+        "requires_approval": True,
+        "paper_count": len(review.papers),
+    }
 
 
 def run_research(topic: str) -> dict:
@@ -39,6 +109,7 @@ def run_research(topic: str) -> dict:
             tavily_key=tavily_key,
         )
     except Exception as exc:
+        logger.error(f"run_research failed: {exc}", exc_info=True)
         return {"success": False, "error": f"run_research failed: {exc}"}
 
     output = ResearchOutput(
@@ -75,10 +146,11 @@ def draft_report(
             research_question=topic,
             brief=brief,
             references=refs,
-            model="gemini-2.5-pro",
+            model="gemini-2.0-flash",
             language=language,
         )
     except Exception as exc:
+        logger.error(f"draft_report failed: {exc}", exc_info=True)
         return {"success": False, "error": f"draft_report failed: {exc}"}
 
     return {
@@ -104,6 +176,7 @@ def export_report(
             filename_prefix=prefix,
         )
     except Exception as exc:
+        logger.error(f"export_report failed: {exc}", exc_info=True)
         return {"success": False, "error": f"export_report failed: {exc}"}
 
     try:
@@ -122,6 +195,7 @@ def export_report(
 def build_function_tools() -> List[FunctionTool]:
     """Expose the orchestrator, drafting, and export utilities as ADK tools."""
     return [
+        FunctionTool(run_academic_review),
         FunctionTool(run_research),
         FunctionTool(draft_report),
         FunctionTool(export_report),

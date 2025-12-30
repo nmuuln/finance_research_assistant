@@ -1,0 +1,98 @@
+# DigitalOcean App Platform deployment for Full-Stack App
+# Custom SvelteKit UI + FastAPI Backend
+
+name: ufe-research-writer-fullstack
+region: sgp
+
+services:
+  - name: web
+    # Use full-stack image from DigitalOcean Container Registry
+    image:
+      registry_type: DOCR
+      registry: adk-test
+      repository: ufe-research-writer-fullstack
+      tag: latest
+
+    # Environment variables
+    envs:
+      # Google Gemini API
+      - key: GOOGLE_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      # Tavily Search API
+      - key: TAVILY_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+      # DigitalOcean Spaces
+      - key: SPACES_ACCESS_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: SPACES_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: SPACES_REGION
+        value: "sgp1"
+        scope: RUN_TIME
+      - key: SPACES_BUCKET
+        value: "finance-bucket"
+        scope: RUN_TIME
+
+      # Google Discovery Engine (optional)
+      - key: PROJECT_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: GDR_APP_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: GDR_LOCATION
+        value: "global"
+        scope: RUN_TIME
+      - key: GDR_COLLECTION
+        scope: RUN_TIME
+        type: SECRET
+      - key: GDR_ASSISTANT
+        scope: RUN_TIME
+        type: SECRET
+
+      # Application settings
+      - key: LANGUAGE
+        value: "mn"
+        scope: RUN_TIME
+      - key: PORT
+        value: "8080"
+        scope: RUN_TIME
+      - key: DATABASE_PATH
+        value: "/app/data/app.db"
+        scope: RUN_TIME
+
+    # Health check
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+      period_seconds: 15
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 3
+
+    # HTTP configuration
+    http_port: 8080
+
+    # Instance configuration
+    instance_count: 1
+    instance_size_slug: professional-s  # 1GB RAM, 1 vCPU (upgrade for production)
+
+    # Routes
+    routes:
+      - path: /
+
+# Optional: Add a managed database for persistence
+# Uncomment to use PostgreSQL instead of SQLite
+#
+# databases:
+#   - name: db
+#     engine: PG
+#     version: "15"
+#     production: false
+#     cluster_name: ufe-research-db
