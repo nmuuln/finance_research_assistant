@@ -9,7 +9,7 @@ services:
     # Use full-stack image from DigitalOcean Container Registry
     image:
       registry_type: DOCR
-      registry: adk-test
+      registry: ufe-finance-research
       repository: ufe-research-writer-fullstack
       tag: latest
 
