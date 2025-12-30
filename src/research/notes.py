@@ -43,7 +43,7 @@ def _coerce_json(text: str) -> Dict:
 
 
 @retry_gemini_call
-def extract_notes(client: genai.Client, text: str, url: str, model: str = "gemini-2.5-flash") -> Dict:
+def extract_notes(client: genai.Client, text: str, url: str, model: str = "gemini-2.0-flash") -> Dict:
     prompt = EXTRACT_PROMPT_TMPL.format(TEXT=text[:8000], URL=url)
     resp = client.models.generate_content(
         model=model,

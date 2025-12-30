@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - SPACES_ACCESS_KEY=${SPACES_ACCESS_KEY}
+      - SPACES_SECRET_KEY=${SPACES_SECRET_KEY}
+      - SPACES_REGION=${SPACES_REGION}
+      - SPACES_BUCKET=${SPACES_BUCKET}
+      - SPACES_ENDPOINT=${SPACES_ENDPOINT}
+      - DATABASE_PATH=/app/data/app.db
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    command: python run_api.py
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    environment:
+      - API_URL=http://api:8000
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/static:/app/static
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  data:
+    driver: local

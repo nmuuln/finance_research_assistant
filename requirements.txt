@@ -21,3 +21,8 @@ pypdf
 
 # Cloud Storage
 google-cloud-storage
+
+# File Processing
+pandas
+openpyxl
+python-multipart

@@ -1,7 +1,6 @@
 import os
 import io
 import base64
-from datetime import datetime
 
 class OutputFormatterTool:
     """

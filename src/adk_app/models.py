@@ -49,3 +49,32 @@ class ExportedDocument(BaseModel):
         description="Size of the file in bytes.",
     )
 
+
+class LiteratureReviewOutput(BaseModel):
+    """Structured payload from literature review phase."""
+
+    papers: List[Dict[str, Any]] = Field(
+        default_factory=list,
+        description="List of academic papers with metadata (title, authors, year, abstract, citations, DOI, URL).",
+    )
+    summary: str = Field(
+        default="",
+        description="Synthesized literature review markdown with themes and citations.",
+    )
+    themes: List[str] = Field(
+        default_factory=list,
+        description="Key themes identified across the academic papers.",
+    )
+    gaps: List[str] = Field(
+        default_factory=list,
+        description="Research gaps and under-explored areas identified.",
+    )
+    approved: bool = Field(
+        default=False,
+        description="Whether user has approved the literature review to proceed.",
+    )
+    search_query: str = Field(
+        default="",
+        description="English search query used for academic database search (translated from original topic).",
+    )
+

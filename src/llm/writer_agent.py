@@ -40,7 +40,7 @@ def draft_finance_report(
     research_question: str,
     brief: str,
     references: List[str],
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-2.0-flash",
     language: str = "mn",
 ) -> str:
     sources_block = "\n".join(f"[{i+1}] {u}" for i, u in enumerate(references))

@@ -64,7 +64,9 @@ def retry_with_backoff(
                     delay *= backoff_factor
 
             # Should not reach here, but just in case
-            raise last_exception
+            if last_exception is not None:
+                raise last_exception
+            raise RuntimeError("Unexpected retry loop exit")
 
         return wrapper
     return decorator

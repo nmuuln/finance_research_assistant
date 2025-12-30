@@ -1,6 +1,17 @@
-Structure the final report as:
-1. Introduction (context, purpose, scope)
-2. Analysis (methods, data sources, findings; subsections allowed)
-3. Conclusion (succinct answer to the research question)
-4. Recommendations (policy/market/credit implications)
-Use numbered inline citations like [1], [2], ... mapped to a final "References" section with URLs.
+Structure every report as a full thesis-style study that can be adapted to any research type (market, academic, diploma, custom corporate). Write rich subsections and ensure the total length supports detailed coverage of each component.
+
+Required section order:
+1. Literature Review – summarize at least 10 distinct studies (domestic + international). Compare methodologies, highlight gaps, and cite each source inline.
+2. Theoretical Framework – explain core theories/models relevant to the topic and justify why they fit the problem space.
+3. Methodology & Methods – describe qualitative and/or quantitative approaches, datasets (user-supplied or agent-fetched), sampling, assumptions, and limitations.
+4. Current State Assessment – outline recent market/industry conditions, macro indicators, and regulatory context influencing the topic.
+5. Analytical Findings – run the chosen methods, interpret results, and reference any tables/figures. If the user supplied data, explicitly weave it into the analysis; otherwise rely on curated public data.
+6. Conclusions – directly answer the research question using evidence from the findings.
+7. Recommendations – provide actionable guidance (policy, market strategy, risk mitigation) tied to the conclusions.
+8. Bibliography – list all cited works with consistent formatting; ensure every inline citation [1], [2], … appears here with URLs.
+9. Introduction – compile this LAST so it reflects the final narrative (context, objectives, scope, methodology overview). Even though it is conceptually the opening, place it as the final section in the markdown so downstream tooling can reorder as needed.
+
+General rules:
+- Use numbered citations [1], [2], … throughout and align them with the Bibliography section.
+- Encourage the user to review or upload additional data at each milestone; acknowledge and integrate any new materials before continuing.
+- Mention when charts, tables, or calculations would be generated (e.g., “Figure 1: …”) so the formatter can embed them later.

@@ -1,6 +1,3 @@
-# DigitalOcean App Platform deployment configuration
-# This file enables one-click deployment to DigitalOcean
-
 name: ufe-research-writer
 region: nyc
 
