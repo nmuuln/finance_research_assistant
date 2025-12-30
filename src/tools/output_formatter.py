@@ -1,5 +1,3 @@
-from datetime import datetime
-from docx import Document
 import os
 import io
 import base64
@@ -13,6 +11,14 @@ class OutputFormatterTool:
     description = "Converts final text into a .docx and returns {'path','text','download_url'}."
 
     def __call__(self, text: str, out_dir: str = "outputs", filename_prefix: str = "ufe_finance_report"):
+        try:
+            from docx import Document  # lazy import so missing dependency doesn't break agent load
+        except ModuleNotFoundError as exc:
+            raise RuntimeError(
+                "python-docx is required to export reports. "
+                "Install with `pip install python-docx` or `pip install -r requirements.txt`."
+            ) from exc
+
         os.makedirs(out_dir, exist_ok=True)
         fname = f"{filename_prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.docx"
         path = os.path.join(out_dir, fname)
