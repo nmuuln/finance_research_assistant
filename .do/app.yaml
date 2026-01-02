@@ -42,7 +42,7 @@ services:
 
       - key: SPACES_ENDPOINT
         scope: RUN_TIME
-        value: "https://nyc3.digitaloceanspaces.com"
+        value: "https://sfo3.digitaloceanspaces.com"
 
       - key: DATABASE_PATH
         scope: RUN_TIME

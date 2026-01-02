@@ -36,7 +36,7 @@ services:
         value: "sgp1"
         scope: RUN_TIME
       - key: SPACES_BUCKET
-        value: "finance-bucket"
+        value: "finance-research-bucket"
         scope: RUN_TIME
 
       # Google Discovery Engine (optional)

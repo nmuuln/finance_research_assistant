@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-REGISTRY_NAME="${1:-adk-test}"
+REGISTRY_NAME="${1:-ufe-finance-research}"
 IMAGE_NAME="ufe-research-writer-web"
 VERSION="${2:-latest}"
 
